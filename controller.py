@@ -1,3 +1,4 @@
+
 import requests
 import time
 
@@ -8,7 +9,8 @@ print("Start")
 
 result = str(0)
 
-url = "http://10.42.0.229"
+url = "http://192.168.4.1/?State="
+#url = "http://10.42.0.104/?State="
 
 res = requests.get(url)
 if(res.text != None):
@@ -22,8 +24,8 @@ def on_key_release(key):
     if result !='S':
         result = 'S'
         print(result)
-        #result_bytes = result.encode('utf_8')
-        requests.post("http://192.168.4.1/?State="+result, data="S")
+        #result_bytes = result.encode('utf_8')rj
+        requests.post(url+result, data="S")
 
 
 def on_key_pressed(key):
@@ -57,8 +59,13 @@ def on_key_pressed(key):
             result = 'G'
             print(result)
         
+        
+
+        
     
-        requests.post("http://192.168.4.1/?State="+result, data=None)
+        requests.post(url+result, data=None)
+
+        
 
 
 with keyboard.Listener(on_release = on_key_release, on_press=on_key_pressed) as listener:

@@ -15,7 +15,7 @@ class webCamStream :
         
         if self.vCap.isOpened() is False:
             print("[Exiting]: Error accessing webcam stream.")
-            exit(0)
+            exit(0) 
         
         fps_input_stream = int(self.vCap.get(5))
         print("FPS of input stream: {}".format(fps_input_stream))
@@ -65,10 +65,10 @@ class webCamStream :
     
 
 
-node_url = "http://10.42.0.229/?State="
+node_url = "http://10.42.0.28/?State="
 kernel = np.ones((7,7), np.uint8)
 
-webcam_stream = webCamStream(stream_id="http://10.42.0.95:4747/video")
+webcam_stream = webCamStream(stream_id="http://10.42.0.174:4747/video")
 webcam_stream.start()
 
 num_frames_processed = 0
@@ -86,8 +86,8 @@ while True:
         frame = cv.line(frame, (320,0), (320,480), (255,0,0), 2)
         frame = cv.line(frame, (640,375), (0,375), (255,0,0), 2)
 
-        lower_bound = np.array([20, 80, 80])      # for yellow color  
-        upper_bound = np.array([30, 255, 255])     # for 
+        lower_bound = np.array([20, 120, 120])      # for yellow color  
+        upper_bound = np.array([30, 255, 255])      # for 
 
         #lower_bound = np.array([136, 87, 111], np.uint8)      # for red color  
         #upper_bound = np.array([180, 255, 255], np.uint8)    # for red color
@@ -105,9 +105,10 @@ while True:
         for contour in contours:
 
             area = cv.contourArea(contour)
+            
             #print(area)
 
-            if area>400:
+            if area>80:
 
                 x,y,w,h = cv.boundingRect(contour)
 
@@ -120,29 +121,29 @@ while True:
 
                 if (getX < 180):
                     print("LEFT")
-                    requests.post(node_url+"L", timeout=10)
+                    requests.post(node_url+"L")
                     break
                 
                 if (getX > 440):
                     print("RIGHT")
-                    requests.post(node_url+"R", timeout=10)
+                    requests.post(node_url+"R")
                     break
                 
                 if (440>getX>180 and  getY<350):
                     print("FORWARD")
-                    requests.post(node_url+"F", timeout=10)
+                    requests.post(node_url+"F")
                     break
                 
                 if(440>getX>180 and getY>350):
                     print("STOP")
-                    requests.post(node_url+"S", timeout=10)
+                    requests.post(node_url+"S")
                     break
 
 
                 
             else:
                 print("STOP")
-                requests.post(node_url+"S", timeout=10)
+                requests.post(node_url+"S")
                 break
 
         num_frames_processed +=1
@@ -152,19 +153,24 @@ while True:
         cv.imshow('Mask',segmented_img)
         key = cv.waitKey(1)
         if key==ord('q'):
-            requests.post(node_url+"S", timeout=10)
+            requests.post(node_url+"S")
             break
 
 end = time.time()
 webcam_stream.stop()
+requests.post(node_url+"S")
+
 
 
 
 elapsed = end-start
 fps = num_frames_processed/elapsed 
 print("FPS: {} , Elapsed Time: {} ".format(fps, elapsed))
+
 # closing all windows 
 cv.destroyAllWindows()
+requests.post(node_url+"S", timeout=10)
+#requests.post(node_url+"S")
 
 
 
