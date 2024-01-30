@@ -1,6 +1,6 @@
 # Object Following Robot Project
 
-![Robot Image](OFR2.jpg)
+![Robot Image](OFR2.jpeg)
 
 ## Overview
 
